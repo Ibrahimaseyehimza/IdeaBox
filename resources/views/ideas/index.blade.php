@@ -16,13 +16,9 @@
             </button>
         </div>
     @endif
-    <a href="{{ route('ideas.create') }}" class="btn btn-primary mb-3">Créer une nouvelle idée</a>
 
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+
+    <a href="{{ route('ideas.create') }}" class="btn btn-primary mb-3">Créer une nouvelle idée</a>
 
     @if ($ideas->isEmpty())
         <p>Aucune idée trouvée.</p>
@@ -36,8 +32,8 @@
                     <th>Theme</th>
                     <th>Département</th>
                     <th>Projet</th>
-                    <th>Status</th>
                     <th>Attachement</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -50,10 +46,12 @@
                         <td>{{ $idea->theme->name ?? 'Non défini' }}</td>
                         <td>{{ $idea->department->name ?? 'Non défini' }}</td>
                         <td>{{ $idea->project->name ?? 'Non défini' }}</td>
-                        <td>{{ $idea->status ?? 'Non défini' }}</td>
 
-                         <!-- Affichage du lien vers l'attachement -->
-                        <td>
+
+
+
+                           <!-- Affichage du lien vers l'attachement -->
+                           <td>
                             @if($idea->attachment)
                                 <a href="{{ asset('storage/' . $idea->attachment) }}" class="btn btn-info btn-sm" target="_blank">
                                     Voir l'attachement
@@ -63,7 +61,12 @@
                             @endif
                         </td>
 
-                        <td>
+
+                        {{-- <td>{{ $idea->status ?? 'Non défini' }}</td> --}}
+
+
+
+                        {{-- <td>
                             <a href="{{ route('ideas.edit', $idea) }}" class="btn btn-warning btn-sm">Modifier</a>
 
                             <!-- Formulaire pour supprimer l'idée -->
@@ -72,6 +75,33 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette idée ?')">Supprimer</button>
                             </form>
+                        </td> --}}
+                        <td>
+                            {{-- Formulaire de mise à jour du statut --}}
+                            <form action="{{ route('admin.ideas.updateStatus', $idea->id) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <select name="status" class="form-control" onchange="this.form.submit()">
+                                    <option value="en_etude" {{ $idea->status == 'en_etude' ? 'selected' : '' }}>En étude</option>
+                                    <option value="validee" {{ $idea->status == 'validee' ? 'selected' : '' }}>Validée</option>
+                                    <option value="mise_en_oeuvre" {{ $idea->status == 'mise_en_oeuvre' ? 'selected' : '' }}>Mise en œuvre</option>
+                                    <option value="rejete" {{ $idea->status == 'rejete' ? 'selected' : '' }}>Rejetée</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            @php
+                                $colors = [
+                                    'en_etude' => 'secondary',
+                                    'validee' => 'success',
+                                    'mise_en_oeuvre' => 'info',
+                                    'rejete' => 'danger',
+                                ];
+                            @endphp
+
+                            <span class="badge bg-{{ $colors[$idea->status] ?? 'dark' }}">
+                                {{ ucfirst(str_replace('_', ' ', $idea->status)) }}
+                            </span>
                         </td>
                     </tr>
                 @endforeach

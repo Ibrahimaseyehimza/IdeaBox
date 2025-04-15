@@ -15,6 +15,11 @@ class Idea extends Model
 {
     use HasFactory;
 
+    const STATUS_EN_ETUDE = 'en_etude';
+    const STATUS_VALIDEE = 'validee';
+    const STATUS_MISE_EN_OEUVRE = 'mise_en_oeuvre';
+    const STATUS_REJETEE = 'rejete';
+
     protected $fillable = [
         'user_id',
         'title',
@@ -24,6 +29,7 @@ class Idea extends Model
         'project_id',
         'status',
         'attachment',
+        'is_anonymous'
     ];
 
     // Relations belongs to === appattient à

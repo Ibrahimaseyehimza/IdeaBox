@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ideas', function (Blueprint $table) {
-            // $table->string('status')->default('en_etude');
+            $table->boolean('is_anonymous')->default(false);
         });
     }
 

@@ -22,13 +22,13 @@ class CommentController extends Controller
     public function store(Request $request, Idea $idea)
     {
         $request->validate([
-            'content' => 'required|string|max:1000',
+            'body' => 'required|string|max:1000',
         ]);
 
         $idea->comments()->create([
             'user_id' => auth()->id(),
             'idea_id' => $idea->id,
-            'body' => $request->content,
+            'body' => $request->body,
         ]);
 
         return redirect()->back()->with('success', 'Commentaire ajouté !');

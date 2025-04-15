@@ -3,10 +3,37 @@
 @section('title', 'Toutes les idées')
 
 @section('content')
+
+{{-- <div class="mb-5">
+    <h2 class="text-center mb-3">🔥 Idées les plus populaires</h2>
+
+    @forelse ($popularIdeas as $idea)
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header d-flex justify-content-between">
+                <strong>{{ $idea->is_anonymous ? 'Anonyme' : $idea->user->name }}</strong>
+                <small>{{ $idea->created_at->diffForHumans() }}</small>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ $idea->title }}</h5>
+                <p class="card-text">{{ Str::limit($idea->description, 120) }}</p>
+
+                <div class="d-flex">
+                    <span class="badge bg-success mr-2">👍 {{ $idea->voters_count }} votes</span>
+                    <span class="badge bg-info">💬 {{ $idea->comments_count }} commentaires</span>
+                </div>
+            </div>
+        </div>
+    @empty
+        <p class="text-muted">Aucune idée populaire pour le moment.</p>
+    @endforelse
+</div> --}}
+
+
+
 <div class="container mt-4">
     <h1 class="mb-4 text-center">🌟 Fil des idées de la communauté</h1>
 
-    @forelse ($ideas as $idea)
+    @forelse ($popularIdeas as $idea)
 
         @php
             $hasLiked = $idea->voters->contains(auth()->user());
@@ -19,7 +46,10 @@
                      class="rounded-circle mr-2"
                      width="40" height="40">
                 <div class="ml-2">
-                    <strong>{{ $idea->user->name }}</strong><br>
+                    {{-- <strong>{{ $idea->user->name }}</strong><br>
+                    <small class="text-muted">{{ $idea->created_at->diffForHumans() }}</small> --}}
+
+                    <strong>{{ $idea->is_anonymous ? 'Anonyme' : $idea->user->name }}</strong><br>
                     <small class="text-muted">{{ $idea->created_at->diffForHumans() }}</small>
                 </div>
             </div>
@@ -55,7 +85,19 @@
                         💬 Commenter
                     </button>
 
+
                     <!-- Formulaire de commentaire caché par défaut -->
+                    {{-- <div id="commentForm-{{ $idea->id }}" class="mt-2 d-none">
+                        <form action="{{ route('comments.store', ['idea' => $idea->id]) }}" method="POST" onsubmit="return handleCommentSubmit({{ $idea->id }})">
+                            @csrf
+                            <input type="hidden" name="idea_id" value="{{ $idea->id }}">
+                            <div class="form-group">
+                                <textarea name="body" class="form-control form-control-sm" rows="2" placeholder="Votre commentaire..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-success">Envoyer</button>
+                        </form>
+                    </div> --}}
+
                     <div id="commentForm-{{ $idea->id }}" class="mt-2 d-none">
                         <form action="{{ route('comments.store', ['idea' => $idea->id]) }}" method="POST" onsubmit="return handleCommentSubmit({{ $idea->id }})">
                             @csrf

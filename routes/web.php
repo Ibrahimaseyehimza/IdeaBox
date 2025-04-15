@@ -37,6 +37,15 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
+// Route pour le home accessible à tous les utilisateur
+Route::get('/', [HomeController::class, 'index'])->name('welcome');
+
+// Route pour le home accessible uniquement aux utilisateurs authentifiés
+Route::get('/home', function () {
+    return view('home');
+})->middleware(['auth', 'verified'])->name('home');
+
+// Route pour le dashboard accessible uniquement aux admin authentifiés
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -62,11 +71,16 @@ Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.
 Route::put('/ideas/{idea}/status', [IdeaController::class, 'updateStatus'])->name('ideas.updateStatus'); // Liaison implicite
 
 // Route Dashboard
-Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+// Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
-// Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
-//     ->middleware('auth', 'role:admin') // Assurez-vous que l'utilisateur est connecté et est un admin
-//     ->name('admin.dashboard');
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/ideas', [AdminDashboardController::class, 'index'])->name('ideas.index');
+    Route::patch('/ideas/{idea}/status', [AdminDashboardController::class, 'updateStatus'])->name('ideas.updateStatus');
+});
+
+Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
+    ->middleware('auth', 'role:admin') // Assurez-vous que l'utilisateur est connecté et est un admin
+    ->name('admin.dashboard');
 
 // Route Project
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -93,8 +107,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard_user', [UserDashboardController::class, 'index'])->name('user.dashboard');
 });
 
-// Route pour le home
-Route::get('/', [HomeController::class, 'index']);
+
 
 // Route Like
 // Route::post('/ideas/{id}/like', [IdeaController::class, 'like'])->name('ideas.like');

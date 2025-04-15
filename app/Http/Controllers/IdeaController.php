@@ -59,34 +59,13 @@ class IdeaController extends Controller
             'theme_id' => $request->theme_id,
             'department_id' => $request->department_id,
             'project_id' => $request->project_id,
+            'is_anonymous' => $request->has('is_anonymous') ? 1 : 0, // Vérifie si la case est cochée
         ]);
 
-        // Gérer l'attachement si présent
-        // if ($request->hasFile('attachment')) {
-        //     $path = $request->file('attachment')->store('attachments', 'public');
-        //     $idea->attachment = $path;
-        // }
-
-        // $idea->save();
-
-
-    // Tentative de gestion de l'attachement
-    // try {
-    //     if ($request->hasFile('attachment') && $request->file('attachment')->isValid()) {
-    //         // Stocker le fichier dans le dossier public/attachments
-    //         $attachmentPath = $request->file('attachment')->store('attachments', 'public');
-    //         // Enregistrer le chemin du fichier dans la base de données
-    //         $idea->attachment = $attachmentPath;
-    //     }
-    // } catch (\Exception $e) {
-    //     // Log l'erreur et retourne un message d'erreur
-    //     \Log::error("Erreur lors de l'upload de l'attachement : " . $e->getMessage());
-    //     return back()->with('error', 'Une erreur est survenue lors de l\'upload du fichier. Veuillez réessayer.');
-    // }
-
-    $attachmentPath = $request->file('attachment')->store('attachments', 'public');
-    $idea->attachment = $attachmentPath;
-    $idea->save();
+            // Gérer l'attachement si présent
+            $attachmentPath = $request->file('attachment')->store('attachments', 'public');
+            $idea->attachment = $attachmentPath;
+            $idea->save();
 
          // Sauvegarder l'idée dans la base de données
         $idea->save();
@@ -109,27 +88,11 @@ class IdeaController extends Controller
      */
     public function update(Request $request, Idea $idea)
     {
-        // if ($idea->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
-        //     return response()->json(['message' => 'Non autorisé.'], 403);
-        // }
-
-        // $request->validate([
-        //     'title' => 'sometimes|string|max:255',
-        //     'description' => 'sometimes|string',
-        //     'theme_id' => 'nullable|exists:themes,id',
-        //     'departement_id' => 'nullable|exists:departements,id',
-        //     'project_id' => 'nullable|exists:projects,id',
-        // ]);
-
-        // $idea->update($request->only(['title', 'description', 'theme_id', 'departement_id', 'project_id']));
-
-        // return response()->json($idea);
-
-
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',
-            'status' => 'nullable|in:en_attente,en_etude,validee,rejetee,en_cours,implémentée', // Validation du statut
+            // 'status' => 'nullable|in:en_attente,en_etude,validee,rejetee,en_cours,implémentée', // Validation du statut
+            'status' => 'nullable|in:en_etude,validee,mise_en_oeuvre,rejete', // Validation du statut
         ]);
 
         $idea->update([
@@ -145,36 +108,6 @@ class IdeaController extends Controller
      * Modifier une idée.
      */
 
-    //  public function edit(Idea $idea)
-    //  {
-        // if (!$idea->exists) {
-        //     return redirect()->route('ideas.index')->with('error', 'Idée non trouvée');
-        // }
-
-        // dd($idea->toArray()); // Affiche l'objet Idea pour déboguer
-        // $idea = Idea::findOrFail($id);
-
-
-        // Charger les thèmes, départements et projets
-    // $themes = Theme::all();
-    // $departments = Department::all();
-    // $projects = Project::all();
-
-    // // Passer toutes ces données à la vue
-    // return view('ideas.edit', [
-    //     'idea' => $idea,
-    //     'themes' => $themes,  // Assurez-vous que cela est passé
-    //     'departments' => $departments,
-    //     'projects' => $projects
-    // ]);
-
-    // $idea = Idea::find($id);
-    // if (!$idea) {
-    //     abort(404, "Idée non trouvée");
-    // }
-    // return view('ideas.edit', compact('idea'));
-        //  return view('ideas.edit', compact('idea')); // Formulaire d'édition
-    //  }
 
     public function edit($id) {
         // dd("on est bien dans edit avec l'idée #$id");
@@ -198,9 +131,6 @@ class IdeaController extends Controller
      */
     public function destroy(Idea $idea)
     {
-        // if ($idea->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
-        //     return response()->json(['message' => 'Non autorisé.'], 403);
-        // }
 
         $idea->delete();
         return redirect()->route('ideas.index')->with('success', 'L\'idée a été supprimée avec succès.');
@@ -214,7 +144,7 @@ class IdeaController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:en_attente,en_etude,validee,rejetee,en_cours,implémentée',
+            'status' => 'required|in:en_etude,validee,mise_en_oeuvre,rejete',
         ]);
 
         $idea = Idea::findOrFail($id);

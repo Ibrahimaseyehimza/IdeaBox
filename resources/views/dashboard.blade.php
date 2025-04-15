@@ -27,7 +27,7 @@
 @endsection
 
 @section('content')
-    <p>Voici le tableau de bord où tu peux ajouter et gérer des idées.</p>
+    <p>Voici le tableau de bord où tu peux ajouter et gérer des idées. </p>
 @endsection
 
 

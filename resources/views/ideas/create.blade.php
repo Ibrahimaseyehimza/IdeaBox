@@ -1,4 +1,5 @@
-@extends('adminlte::page')
+{{-- @extends('adminlte::page') --}}
+@extends('layouts.guest')
 
 @section('title', 'Créer une idée')
 
@@ -7,6 +8,7 @@
 @endsection
 
 @section('content')
+   <div class="container ">
     <form action="{{ route('ideas.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
@@ -57,6 +59,17 @@
             <input type="file" class="form-control" name="attachment" id="attachment">
         </div>
 
+        {{-- Soumition anonymat --}}
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="anonymous" name="is_anonymous" value="1">
+            <label class="form-check-label" for="anonymous">Soumettre anonymement</label>
+        </div>
+
+
         <button type="submit" class="btn btn-primary">Ajouter l'idée</button>
+
+
     </form>
+   </div>
 @endsection
+

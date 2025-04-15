@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             // $table->string('status')->default('en_attente');
-            $table->enum('status', ['en_attente', 'en_etude', 'validee', 'rejetee', 'en_cours', 'implémentée'])->default('en_attente');
+            $table->enum('status', ['en_etude', 'validee', 'mise_en_oeuvre', 'rejete'])->default('en_etude');
             $table->foreignId('theme_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('department_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('project_id')->nullable()->constained()->onDelete('set null');
