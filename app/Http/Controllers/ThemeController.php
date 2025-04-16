@@ -22,7 +22,7 @@ class ThemeController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.themes.create');
     }
 
     /**
@@ -35,9 +35,9 @@ class ThemeController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $theme = Theme::create($request->all());
+       Theme::create($request->all());
 
-        // return redirect()->route('themes.index');
+        return redirect()->route('themes.index')->with('success', 'Thémes ajoutée avec succès');
 
     }
 
@@ -46,7 +46,7 @@ class ThemeController extends Controller
      */
     public function show(Theme $theme)
     {
-        return Theme::findOrFail($id);
+        return view('admin.themes.create', compact('theme'));
     }
 
     /**
@@ -54,7 +54,7 @@ class ThemeController extends Controller
      */
     public function edit(Theme $theme)
     {
-        //
+        return view('admin.themes.edit', compact('theme'));
     }
 
     /**
@@ -62,7 +62,6 @@ class ThemeController extends Controller
      */
     public function update(Request $request, Theme $theme)
     {
-        $theme = Theme::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:100',
@@ -71,17 +70,17 @@ class ThemeController extends Controller
 
         $theme->update($request->all());
 
-        return response()->json($theme);
+        return redirect()->route('themes.index')->with('success', 'Projet mis à jour avec succès');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Theme $theme)
     {
-        $theme = Theme::findOrFail($id);
         $theme->delete();
 
-        return response()->json(['message' => 'Thématique supprimée.']);
+        return redirect()->route('themes.index')->with('success', 'Théme supprimé avec succés');
     }
 }

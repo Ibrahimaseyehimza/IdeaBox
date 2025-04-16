@@ -83,13 +83,24 @@ Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
     ->name('admin.dashboard');
 
 // Route Project
-Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+// Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+// Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Route qui permet de générer le crud facilement
+    Route::resource('projects', ProjectController::class);
+    Route::resource('themes', ThemeController::class);
+    Route::resource('departments', DepartmentController::class);
+});
+
+
+
 
 // Route Departement
-Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
+// Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
 
 // Route Theme
-Route::get('/themes', [ThemeController::class, 'index'])->name('themes.index');
+// Route::get('/themes', [ThemeController::class, 'index'])->name('themes.index');
 
 // Route User
 Route::get('/users', [UserController::class, 'index'])->name('users.index');

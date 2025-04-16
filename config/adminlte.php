@@ -336,7 +336,7 @@ return [
 
         [
             'text' => 'Projets',
-            'url'  => 'projects',
+            'url'  => 'admin/projects',
             'icon' => 'fas fa-project-diagram',
         ],
         [
@@ -346,7 +346,7 @@ return [
         ],
         [
             'text' => 'Départements',
-            'url'  => 'departments',
+            'url'  => 'admin/departments',
             'icon' => 'fas fa-building',
         ],
 
