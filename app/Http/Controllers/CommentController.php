@@ -29,9 +29,11 @@ class CommentController extends Controller
             'user_id' => auth()->id(),
             'idea_id' => $idea->id,
             'body' => $request->body,
+            'parent_id' => $request->parent_id, // pour les réponses
         ]);
 
-        return redirect()->back()->with('success', 'Commentaire ajouté !');
+        return back();
+        // return redirect()->back()->with('success', 'Commentaire ajouté !');
     }
 
     // Fonction pour voir les commentaires

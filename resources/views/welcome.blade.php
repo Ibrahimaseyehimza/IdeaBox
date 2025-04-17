@@ -98,6 +98,47 @@
                         </form>
                     </div> --}}
 
+                    <!-- Liste des commentaires cachée par défaut -->
+<!-- Liste des commentaires avec discussion -->
+<div id="comments-{{ $idea->id }}" class="mt-3 d-none">
+    @php
+        $topLevelComments = $idea->comments->whereNull('parent_id');
+    @endphp
+
+    @if ($topLevelComments->isEmpty())
+        <p class="text-muted">Aucun commentaire pour cette idée.</p>
+    @else
+        @foreach ($topLevelComments as $comment)
+            <div class="border p-2 mb-2 rounded bg-light">
+                <strong>{{ $comment->user->name }}</strong>
+                <span class="text-muted small">- {{ $comment->created_at->diffForHumans() }}</span>
+                <p class="mb-1">{{ $comment->body }}</p>
+
+                {{-- Affichage des réponses --}}
+                @foreach ($comment->replies as $reply)
+                    <div class="ms-4 border-start ps-3 pt-2 mt-2 bg-white rounded">
+                        <strong>{{ $reply->user->name }}</strong>
+                        <span class="text-muted small">- {{ $reply->created_at->diffForHumans() }}</span>
+                        <p class="mb-1">{{ $reply->body }}</p>
+                    </div>
+                @endforeach
+
+                {{-- Formulaire de réponse --}}
+                <form action="{{ route('comments.store', ['idea' => $idea->id]) }}" method="POST" class="ms-4 mt-2">
+                    @csrf
+                    <input type="hidden" name="parent_id" value="{{ $comment->id }}">
+                    <div class="form-group">
+                        <textarea name="body" class="form-control form-control-sm" rows="1" placeholder="Répondre à ce commentaire..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-outline-success mt-1">Répondre</button>
+                </form>
+            </div>
+        @endforeach
+    @endif
+</div>
+
+
+
                     <div id="commentForm-{{ $idea->id }}" class="mt-2 d-none">
                         <form action="{{ route('comments.store', ['idea' => $idea->id]) }}" method="POST" onsubmit="return handleCommentSubmit({{ $idea->id }})">
                             @csrf
@@ -108,6 +149,9 @@
                             <button type="submit" class="btn btn-sm btn-success">Envoyer</button>
                         </form>
                     </div>
+
+
+
 
                     <!-- Bouton pour afficher/masquer les commentaires -->
                     <button

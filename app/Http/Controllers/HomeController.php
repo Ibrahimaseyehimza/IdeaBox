@@ -18,7 +18,11 @@ class HomeController extends Controller
 
 
         // Idées populaires (par votes et commentaires)
-        $popularIdeas = Idea::with(['user'])
+        $popularIdeas = Idea::with([
+            'user',
+            'comments.user',
+            'comments.replies.user',
+        ])
         ->withCount(['votes', 'comments'])
         ->orderByDesc('votes_count')
         ->orderByDesc('comments_count')
@@ -27,6 +31,7 @@ class HomeController extends Controller
 
     // Toutes les idées récentes (si tu veux afficher en dessous)
     $ideas = Idea::latest()->with('user')->paginate(10);
+    // dd($popularIdeas->first()->comments);
 
     return view('welcome', compact('popularIdeas', 'ideas'));
         // return view('welcome', compact('ideas'));

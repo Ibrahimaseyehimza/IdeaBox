@@ -64,8 +64,24 @@ class Idea extends Model
 
     }
 
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
+    // public function comments()
+    // {
+    //     return $this->hasMany(Comment::class);
+    // }
+
+    // public function comments() {
+    //     return $this->hasMany(Comment::class)->whereNull('parent_id')->latest();
+    // }
+
+//     public function comments()
+// {
+//     return $this->hasMany(Comment::class)->whereNull('parent_id')->with(['user', 'replies.user'])->latest();
+// }
+
+public function comments()
+{
+    return $this->hasMany(Comment::class)->with(['user', 'replies.user'])->latest();
+}
+
+
 }

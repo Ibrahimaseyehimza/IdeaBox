@@ -25,4 +25,8 @@ class Comment extends Model
     {
         return $this->belongsTo(Idea::class);
     }
+
+    public function replies() {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
 }

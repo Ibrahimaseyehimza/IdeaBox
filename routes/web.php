@@ -126,8 +126,12 @@ Route::post('/ideas/{id}/like', [VoteController::class, 'store'])->name('ideas.l
 
 
 // Route pour les commentaires
-Route::post('/ideas/{idea}/comments', [CommentController::class, 'store'])->name('comments.store')->middleware('auth');
+// Route::post('/ideas/{idea}/comments', [CommentController::class, 'store'])->name('comments.store')->middleware('auth');
 
+Route::middleware(['auth'])->group(function () {
+    Route::post('/ideas/{idea}/comments', [CommentController::class, 'store'])->name('comments.store')->middleware('auth');
+
+});
 
 
 require __DIR__.'/auth.php';
